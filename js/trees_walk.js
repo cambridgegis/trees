@@ -14,12 +14,10 @@ function init() {
 		});
 
 	map.addLayer(new esri.layers.ArcGISTiledMapServiceLayer("http://gis.cambridgema.gov/arcgis/rest/services/CDDBasemap/MapServer"));
-	// map.addLayer(new esri.layers.ArcGISTiledMapServiceLayer("http://zero/arcgis/rest/services/CDDBasemap/MapServer"));
 
 	var imageParameters = new esri.layers.ImageParameters();
 	imageParameters.layerIds = [0];
 	imageParameters.layerOption = esri.layers.ImageParameters.LAYER_OPTION_SHOW;
-	imageParameters.transparent = true;	
 	map.addLayer(new esri.layers.ArcGISDynamicMapServiceLayer("http://gis.cambridgema.gov/arcgis/rest/services/DPWEmbeddedLayers/MapServer",
 															  {"imageParameters":imageParameters}));
 
@@ -38,7 +36,7 @@ function initLocation() {
 		navigator.geolocation.getCurrentPosition(zoomToLocation, locationError);
 		navigator.geolocation.watchPosition(zoomToLocation, locationError);
 	} else {
-		alert("Browser doesn't support Geolocation.  See http://caniuse.com/#feat=geolocation for supported browser versions.");
+		alert('Browser doesn nott support Geolocation.  See http://caniuse.com/#feat=geolocation for supported browser versions.');
 	}
 }
 
