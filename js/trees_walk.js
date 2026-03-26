@@ -1,93 +1,47 @@
-dojo.require("esri.map");
+const [Map, FeatureLayer, Basemap, TileLayer, VectorTileLayer] = await $arcgis.import([
+"@arcgis/core/Map.js",
+"@arcgis/core/layers/FeatureLayer.js",
+"@arcgis/core/Basemap.js",
+"@arcgis/core/layers/TileLayer.js",
+"@arcgis/core/layers/VectorTileLayer.js",
+]);
 
-// Global variables
-var map;
-var graphic;
-var maxZoom = 20;
+const viewElement = document.querySelector("arcgis-map");
+viewElement.center = [-71.0971,42.3711];
+viewElement.zoom = 20;
 
-function init() {
-	map = new esri.Map("map",{
-			center:[-71.0971,42.3711], //long, lat
-			zoom: maxZoom,
-			sliderStyle:"small",
-			logo: false
-		});
-
-	map.addLayer(new esri.layers.ArcGISTiledMapServiceLayer("https://gis.cambridgema.gov/arcgis/rest/services/CDDBasemap/MapServer"));
-
-	var imageParameters = new esri.layers.ImageParameters();
-	imageParameters.layerIds = [0];
-	imageParameters.layerOption = esri.layers.ImageParameters.LAYER_OPTION_SHOW;
-	map.addLayer(new esri.layers.ArcGISDynamicMapServiceLayer("https://gis.cambridgema.gov/arcgis/rest/services/DPWEmbeddedLayers/MapServer",
-															  {"imageParameters":imageParameters}));
-
-	if(window.onorientationchange !== undefined){
-		dojo.connect(dojo.global, "onorientationchange", orientationChanged);
-	}else{
-		dojo.connect(dojo.global, "onresize", orientationChanged);
-	}
-
-	initLocation();
+// Set up the basemap
+const vectorTileLayer = new VectorTileLayer({
+portalItem: {
+	id: "ff81a3dd9e2c402e88f4277ff3b278f3", // Cambridge GIS Vector Basemap
 }
+});
+const basemap = new Basemap({ baseLayers: [vectorTileLayer] });
 
-// This function runs when the page loads
-function initLocation() {
-	if (navigator.geolocation) {
-		navigator.geolocation.getCurrentPosition(zoomToLocation, locationError);
-		navigator.geolocation.watchPosition(zoomToLocation, locationError);
-	} else {
-		alert("Browser doesn't support Geolocation.  See http://caniuse.com/#feat=geolocation for supported browser versions.");
-	}
-}
+// Set up the tree layer
+const labelClass = {
+symbol: {
+	type: "text", // autocasts as new TextSymbol()
+	color: [38,38,38,255],
+	font: {
+	family: "Roboto", // autocasts as new Font()
+	size: 9.75,
+	style: "italic",
+	},
+	haloColor: [247,247,247,255],
+	haloSize: 1.5
+},
+labelExpressionInfo: {
+	expression: "$feature.CommonName",
+},
+};
+const trees = new FeatureLayer({
+url: "https://services1.arcgis.com/WnzC35krSYGuYov4/ArcGIS/rest/services/Trees/FeatureServer/0",
+labelingInfo: labelClass
+});
 
-function locationError(error) {
-	switch (error.code) {
-
-	case error.PERMISSION_DENIED:
-		alert("Location permission denied.");
-		break;
-
-	case error.POSITION_UNAVAILABLE:
-		alert("Current location not available.");
-		break;
-
-	case error.TIMEOUT:
-		alert("Location acquisition timed out.");
-		break;
-		
-	default:
-		alert("Unkown error");
-		break;
-	}
-}
-
-function zoomToLocation(location) {
-	//zoom to the users location and add a graphic
-	var pt = esri.geometry.geographicToWebMercator(new esri.geometry.Point(location.coords.longitude, location.coords.latitude));
-	if (!graphic) {
-		addGraphic(pt);
-	}
-	else { //move the graphic if it already exists
-		graphic.setGeometry(pt);
-	}
-	map.centerAndZoom(pt, maxZoom);
-}
-      
-function addGraphic(pt){
-	var symbol = new esri.symbol.SimpleMarkerSymbol(esri.symbol.SimpleMarkerSymbol.STYLE_CIRCLE, 12, 
-													new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID,
-																					 new dojo.Color([210, 105, 30, 0.5]), 8), 
-													new dojo.Color([210, 105, 30, 0.9])
-													);
-	graphic = new esri.Graphic(pt, symbol);
-	map.graphics.add(graphic);
-}
-
-function orientationChanged() {
-	if(map) {
-		map.reposition();
-		map.resize();
-	}
-}
-
-dojo.ready(init);
+// Create the map object and add the layers
+viewElement.map = new Map({
+basemap: basemap,
+layers: [trees]
+});

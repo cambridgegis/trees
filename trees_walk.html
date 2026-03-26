@@ -1,35 +1,26 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=7, IE=9, IE=10">
-	  <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no"/>
-    <meta name="theme-color" content="#1c6f09">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <title>Cambridge Tree Walk</title>
-    <link rel="stylesheet" href="https://js.arcgis.com/3.6/js/dojo/dijit/themes/nihilo/nihilo.css">
-    <link rel="stylesheet" href="https://js.arcgis.com/3.6/js/esri/css/esri.css">
-    <style>
-      html, body, #map {
-        height:100%;
-        width:100%;
-        margin:0;
-        padding:0;
-      }
 
+    <!-- Load the ArcGIS Maps SDK for JavaScript from CDN -->
+    <script type="module" src="https://js.arcgis.com/5.0/"></script>
+    <script type="module" src="js/trees_walk.js"></script>
+
+    <style>
+      html,
       body {
-        background-color:#FFF;
-        overflow:hidden;
-        font-family:"Trebuchet MS";
+        height: 100%;
+        margin: 0;
       }
     </style>
-	<script>var dojoConfig = { parseOnLoad: true };</script>
-    <script src="https://js.arcgis.com/3.6/"></script>
-    <script src="js/trees_walk.js"></script>
   </head>
 
-  <body class="nihilo">
-	
-    <div id="map"></div>
-	
+  <body>
+    <arcgis-map>
+      <arcgis-track slot="top-right" visual-scale="m" scale="564" snapToZoom="false"></arcgis-track>
+    </arcgis-map>
   </body>
-</html> 
+</html>

@@ -1,7 +1,7 @@
-trees
-=====
+trees_walk.html
+===============
 
-ArcGIS API for Javascript tree inventory application.  [See here](http://www.cambridgema.gov/theworks/newsandevents/news/2013/09/streettreesgismapping) for more information and a link to the live app.
+ArcGIS API for Javascript [Cambridge Tree Walk](https://storymaps.arcgis.com/collections/be712fb8c5f7475da2b7fbcf73ba48cb?item=5) application.
 
 Resources
 =========
